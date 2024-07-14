@@ -10,6 +10,7 @@ type routesLists struct {
 var routeGroups []routesLists
 
 func RoutesMain() *http.ServeMux {
+	routeGroups = append(routeGroups, routesLists{name: "/", function: empty})
 	routeGroups = append(routeGroups, routesLists{name: "/registerUser", function: registerUser})
 	routeGroups = append(routeGroups, routesLists{name: "/getUsers", function: getUsers})
 

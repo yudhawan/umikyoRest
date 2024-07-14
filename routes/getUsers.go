@@ -32,5 +32,6 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 		libs.SendErrorResponse(w, "Error decoding users", http.StatusInternalServerError)
 		return
 	}
+	// fmt.Println("users : ", len(users))
 	json.NewEncoder(w).Encode(users)
 }
