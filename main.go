@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	routes "umikyoRest/api"
 	"umikyoRest/libs"
-	"umikyoRest/routes"
 
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
