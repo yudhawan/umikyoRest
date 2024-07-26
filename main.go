@@ -7,6 +7,7 @@ import (
 	"os"
 	routes "umikyoRest/api"
 	"umikyoRest/libs"
+	"umikyoRest/middleware"
 
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -21,7 +22,7 @@ func main() {
 	}
 	port := os.Getenv("PORT")
 	mux := http.NewServeMux()
-	mux.Handle("/api/", http.StripPrefix("/api", routes.RoutesMain()))
+	mux.Handle("/api/", middleware.AuthorizationMiddleware(http.StripPrefix("/api", routes.RoutesMain())))
 	libs.DBConnect()
 	fmt.Println("Running on port ", port)
 	log.Fatal(http.ListenAndServe(":"+port, mux))
