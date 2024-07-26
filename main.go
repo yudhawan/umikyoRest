@@ -22,7 +22,7 @@ func main() {
 	}
 	port := os.Getenv("PORT")
 	mux := http.NewServeMux()
-	mux.Handle("/api/", middleware.AuthorizationMiddleware(http.StripPrefix("/api", routes.RoutesMain())))
+	mux.Handle("/api/", middleware.AuthorizationMiddleware(http.StripPrefix("/api", (routes.RoutesMain()))))
 	libs.DBConnect()
 	fmt.Println("Running on port ", port)
 	log.Fatal(http.ListenAndServe(":"+port, mux))
