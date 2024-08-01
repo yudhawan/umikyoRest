@@ -18,7 +18,7 @@ var db_client *mongo.Client
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
+		// log.Fatalf("Error .env file: %v", err)
 	}
 	port := os.Getenv("PORT")
 	mux := http.NewServeMux()
