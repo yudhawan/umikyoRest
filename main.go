@@ -18,7 +18,7 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		panic(err)
+		// panic(err)
 	}
 	port := os.Getenv("PORT")
 	mux := http.NewServeMux()
