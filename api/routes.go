@@ -1,6 +1,9 @@
 package api
 
-import "net/http"
+import (
+	"net/http"
+	"umikyoRest/libs"
+)
 
 type routesLists struct {
 	name     string
@@ -9,10 +12,13 @@ type routesLists struct {
 
 var routeGroups []routesLists
 
+func app(api string, method string, fn http.HandlerFunc) {
+	routeGroups = append(routeGroups, routesLists{name: api, function: libs.MethodHandler(method, fn)})
+}
 func RoutesMain() *http.ServeMux {
-	routeGroups = append(routeGroups, routesLists{name: "/", function: empty})
-	routeGroups = append(routeGroups, routesLists{name: "/registerUser", function: registerUser})
-	routeGroups = append(routeGroups, routesLists{name: "/getUsers", function: getUsers})
+	app("/", "GET", empty)
+	app("/registerUser", "POST", registerUser)
+	app("/getUsers", "GET", getUsers)
 
 	mux := http.NewServeMux()
 	for _, route := range routeGroups {

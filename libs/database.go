@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -44,4 +46,18 @@ func DBCollection(db string) *mongo.Collection {
 	}
 	collection := db_client.Database("umikyodb").Collection(db)
 	return collection
+}
+
+func Collection(table string, w http.ResponseWriter, user bson.D) *mongo.Cursor {
+	collection := DBCollection(table)
+	if collection == nil {
+		SendErrorResponse(w, "Database collection not found", http.StatusInternalServerError)
+	}
+
+	cursor, err := collection.Find(context.Background(), user)
+	if err != nil {
+		SendErrorResponse(w, "Error Database Collection Users", 502)
+	}
+	defer cursor.Close(context.Background())
+	return cursor
 }
