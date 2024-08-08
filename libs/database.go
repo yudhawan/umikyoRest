@@ -4,13 +4,16 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+type Field struct {
+	FieldName string
+}
 
 var db_client *mongo.Client
 
@@ -48,16 +51,51 @@ func DBCollection(db string) *mongo.Collection {
 	return collection
 }
 
-func Collection(table string, w http.ResponseWriter, user bson.D) *mongo.Cursor {
+func Collection(table string) *mongo.Collection {
 	collection := DBCollection(table)
 	if collection == nil {
-		SendErrorResponse(w, "Database collection not found", http.StatusInternalServerError)
+		fmt.Printf("Couldn't find collection of %v", table)
+		// SendErrorResponse(w , "Database collection not found", http.StatusInternalServerError)
 	}
 
-	cursor, err := collection.Find(context.Background(), user)
-	if err != nil {
-		SendErrorResponse(w, "Error Database Collection Users", 502)
-	}
-	defer cursor.Close(context.Background())
+	// cursor, err := collection.Find(context.Background(), user)
+	// if err != nil {
+	// 	SendErrorResponse(w, "Error Database Collection Users", 502)
+	// }
+	// defer cursor.Close(context.Background())
+	return collection
+}
+
+var data []bson.M
+
+func (c *Field) GetOne(key string, val any) *mongo.SingleResult {
+	collection := Collection(c.FieldName)
+	cursor := collection.FindOne(context.Background(), bson.D{{key, val}})
 	return cursor
+}
+func (c *Field) GetMany(key string, val any) []bson.M {
+	collection := Collection(c.FieldName)
+	cursor, err := collection.Find(context.Background(), bson.D{{key, val}})
+	if err != nil {
+		fmt.Print(err)
+	}
+	cursor.All(context.Background(), &data)
+	return data
+}
+func (c *Field) GetAll() []bson.M {
+	collection := Collection(c.FieldName)
+	cursor, err := collection.Find(context.Background(), bson.D{})
+	if err != nil {
+		fmt.Print(err)
+	}
+	cursor.All(context.Background(), &data)
+	return data
+}
+func (c *Field) Insert(datum any) (*mongo.InsertOneResult, error) {
+	collection := Collection(c.FieldName)
+	cursor, err := collection.InsertOne(context.Background(), datum)
+	if err != nil {
+		fmt.Printf("Insert function : %v", err)
+	}
+	return cursor, err
 }

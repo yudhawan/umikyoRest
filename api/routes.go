@@ -19,6 +19,8 @@ func RoutesMain() *http.ServeMux {
 	app("/", "GET", empty)
 	app("/registerUser", "POST", registerUser)
 	app("/getUsers", "GET", getUsers)
+	app("/userLogin", "POST", userLogin)
+	app("/addProduct", "POST", createProduct)
 
 	mux := http.NewServeMux()
 	for _, route := range routeGroups {
